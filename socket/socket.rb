@@ -10,9 +10,7 @@ socket = Socket.open(Socket::AF_INET, Socket::SOCK_PACKET, Ethernet::ETH_P_ALL)
 buff = ''
 
 loop do
-    if(buff.size < 1600)
-        buff << socket.read(8192)
-    end
+    buff, sockaddr = socket.recvfrom(8192)
 
     ether_header = EtherHeader.new(buff)
 
@@ -55,12 +53,6 @@ loop do
             transport_size = udp_header.uh_ulen
             buff.slice!(0..transport_size - 1)
         end
-
-       size = (ip_header.ip_len - (ip_header.ip_hl << 2) - transport_size - 1)
-       if(size > 0)
-           buff.slice!(0..size)
-       end
-
     elsif(ether_header.ether_type == Ethernet::ETHERTYPE_ARP)
         puts 'ARPパケット'
         arp = ARP.new(buff)
@@ -69,7 +61,6 @@ loop do
         puts "送信元IPアドレス #{arp.arp_spa}"
         puts "送信先MACアドレス #{arp.arp_tha}"
         puts "送信先IPアドレス #{arp.arp_tpa}"
-        buff.slice!(0..27)
     end
 
     puts
