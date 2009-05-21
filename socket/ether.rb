@@ -4,12 +4,12 @@ class EtherHeader
     attr_reader :ether_type
 
     def initialize(frame)
-        @ether_dhost = mac_tos(frame, 0)
-        @ether_shost = mac_tos(frame, 6)
+        @ether_dhost = mac_to_s(frame, 0)
+        @ether_shost = mac_to_s(frame, 6)
         @ether_type = (frame[12] << 8) + frame[13]
     end
 
-    def mac_tos(frame, index)
+    def mac_to_s(frame, index)
         return sprintf('%02X:%02X:%02X:%02X:%02X:%02X',
             frame[index], frame[index + 1], frame[index + 2], frame[index + 3], frame[index + 4], frame[index + 5])
     end

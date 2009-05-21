@@ -54,7 +54,7 @@ loop do
         elsif(ip_header.ip_p == Socket::IPPROTO_ICMP)
             puts 'ICMPパケット'
             icmp = ICMPFactory.parse(buff)
-            puts icmp.icmp_type
+            puts buff[0]
         end
     elsif(ether_header.ether_type == Ethernet::ETHERTYPE_ARP)
         puts 'ARPパケット'

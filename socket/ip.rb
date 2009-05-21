@@ -21,11 +21,11 @@ class IPHeader
         @ip_ttl = packet[8]
         @ip_p = packet[9]
         @ip_sum = (packet[10] << 8) + packet[11]
-        @ip_src = ip_tos(packet, 12)
-        @ip_dst = ip_tos(packet, 16)
+        @ip_src = ip_to_s(packet, 12)
+        @ip_dst = ip_to_s(packet, 16)
     end
 
-    def ip_tos(packet, index)
+    def ip_to_s(packet, index)
         return sprintf("%d.%d.%d.%d", packet[index], packet[index + 1], packet[index + 2], packet[index + 3])
     end
 end
