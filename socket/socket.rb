@@ -1,10 +1,11 @@
 require 'socket'
+
 require './ether'
 require './ip'
 require './arp'
 require './tcp'
 require './udp'
-require './icmp_factory'
+require './icmp_parser'
 
 socket = Socket.open(Socket::AF_INET, Socket::SOCK_PACKET, Ethernet::ETH_P_ALL)
 
@@ -53,8 +54,24 @@ loop do
             buff.slice!(0..transport_size - 1)
         elsif(ip_header.ip_p == Socket::IPPROTO_ICMP)
             puts 'ICMPパケット'
-            icmp = ICMPFactory.parse(buff)
-            puts icmp.icmp_type
+            icmp = ICMPParser.parse(buff)
+            puts "icmp_type = #{icmp.icmp_type}"
+
+            if(icmp.icmp_type == ICMP::ICMP_ECHOREPLY)
+                puts 'エコー応答'
+            elsif(icmp.icmp_type == ICMP::ICMP_UNREACH)
+                puts '到達不能'
+            elsif(icmp.icmp_type == ICMP::ICMP_SOURCEQUENCH)
+                puts '始点抑制'
+            elsif(icmp.icmp_type == ICMP::ICMP_REDIRECT)
+                puts 'リダイレクト'
+            elsif(icmp.icmp_type == ICMP::ICMP_ECHO)
+                puts 'エコー要求'
+            elsif(icmp.icmp_type == ICMP::ICMP_TIMXCEED)
+                puts '時間超過'
+            elsif(icmp.icmp_type == ICMP::ICMP_PARAMPROB)
+                puts 'パラメータエラー'
+            end
         end
     elsif(ether_header.ether_type == Ethernet::ETHERTYPE_ARP)
         puts 'ARPパケット'

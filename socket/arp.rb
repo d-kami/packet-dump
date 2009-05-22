@@ -45,9 +45,9 @@ class ARP
         @arp_tpa = ip_to_s(packet, 24)
     end
 
-    def mac_to_s(frame, index)
+    def mac_to_s(packet, index)
         return sprintf('%02X:%02X:%02X:%02X:%02X:%02X',
-            frame[index], frame[index + 1], frame[index + 2], frame[index + 3], frame[index + 4], frame[index + 5])
+            packet[index], packet[index + 1], packet[index + 2], packet[index + 3], packet[index + 4], packet[index + 5])
     end
 
     def ip_to_s(packet, index)
