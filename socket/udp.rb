@@ -5,9 +5,9 @@ class UDPHeader
     attr_reader :us_sum
 
     def initialize(packet)
-        @uh_sport = (packet[0] << 8) + packet[1]
-        @uh_dport = (packet[2] << 8) + packet[3]
-        @uh_ulen = (packet[4] << 8) + packet[5]
-        @uh_sum = (packet[6] << 8) + packet[7]
+        @uh_sport = packet[0, 2].unpack('n')[0]
+        @uh_dport = packet[2, 2].unpack('n')[0]
+        @uh_ulen = packet[4, 2].unpack('n')[0]
+        @uh_sum = packet[6, 2].unpack('n')[0]
     end
 end

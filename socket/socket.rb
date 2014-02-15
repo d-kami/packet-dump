@@ -14,29 +14,29 @@ loop do
 
     ether_header = EtherHeader.new(buff)
 
-    puts 'Ethernetフレーム'
-    puts "送信元MACアドレス #{ether_header.ether_shost}"
-    puts "送信先MACアドレス #{ether_header.ether_dhost}"
+    puts 'Ethernet Frame'
+    puts "src Mac Address #{ether_header.ether_shost}"
+    puts "dst Mac Address #{ether_header.ether_dhost}"
     puts sprintf("EtherType = 0x%X", ether_header.ether_type)
 
     buff.slice!(0..13)
 
     if(ether_header.ether_type == Ethernet::ETHERTYPE_IP)
-        puts 'IPパケット'
+        puts 'IP Header'
         ip_header = IPHeader.new(buff)
-        puts "送信元IPアドレス #{ip_header.ip_src}"
-        puts "送信先IPアドレス #{ip_header.ip_dst}"
-        puts "プロトコル番号 #{ip_header.ip_p}"
-        puts "サイズ #{ip_header.ip_len}"
+        puts "src IP Address #{ip_header.ip_src}"
+        puts "dst IP Address #{ip_header.ip_dst}"
+        puts "Protocol #{ip_header.ip_p}"
+        puts "Length #{ip_header.ip_len}"
         buff.slice!(0..(ip_header.ip_hl << 2) - 1)
 
         transport_size = 0
 
         if(ip_header.ip_p == Socket::IPPROTO_TCP)
-            puts 'TCPパケット'
+            puts 'TCP Headaer'
             tcp_header = TCPHeader.new(buff)
-            puts "送信元ポート番号 #{tcp_header.th_sport}"
-            puts "送信先ポート番号 #{tcp_header.th_dport}"
+            puts "src Port #{tcp_header.th_sport}"
+            puts "dst Port #{tcp_header.th_dport}"
             transport_size = tcp_header.th_off << 2
             buff.slice!(0..transport_size - 1)
 
@@ -46,41 +46,41 @@ loop do
                 puts contents
             end
         elsif(ip_header.ip_p == Socket::IPPROTO_UDP)
-            puts 'UDPパケット'
+            puts 'UDP Header'
             udp_header = UDPHeader.new(buff)
-            puts "送信元ポート番号 #{udp_header.uh_sport}"
-            puts "送信先ポート番号 #{udp_header.uh_dport}"
+            puts "src Port #{udp_header.uh_sport}"
+            puts "dst Port #{udp_header.uh_dport}"
             transport_size = udp_header.uh_ulen
             buff.slice!(0..transport_size - 1)
         elsif(ip_header.ip_p == Socket::IPPROTO_ICMP)
-            puts 'ICMPパケット'
+            puts 'ICMP Header'
             icmp = ICMPParser.parse(buff)
             puts "icmp_type = #{icmp.icmp_type}"
 
             if(icmp.icmp_type == ICMP::ICMP_ECHOREPLY)
-                puts 'エコー応答'
+                puts 'Echo Reply'
             elsif(icmp.icmp_type == ICMP::ICMP_UNREACH)
-                puts '到達不能'
+                puts 'Unreach'
             elsif(icmp.icmp_type == ICMP::ICMP_SOURCEQUENCH)
-                puts '始点抑制'
+                puts 'SourceEquench'
             elsif(icmp.icmp_type == ICMP::ICMP_REDIRECT)
-                puts 'リダイレクト'
+                puts 'Redirect'
             elsif(icmp.icmp_type == ICMP::ICMP_ECHO)
-                puts 'エコー要求'
+                puts 'Echo'
             elsif(icmp.icmp_type == ICMP::ICMP_TIMXCEED)
-                puts '時間超過'
+                puts 'TimeExceed'
             elsif(icmp.icmp_type == ICMP::ICMP_PARAMPROB)
-                puts 'パラメータエラー'
+                puts 'Error'
             end
         end
     elsif(ether_header.ether_type == Ethernet::ETHERTYPE_ARP)
-        puts 'ARPパケット'
+        puts 'ARP Header'
         arp = ARP.new(buff)
 
-        puts "送信元MACアドレス #{arp.arp_sha}"
-        puts "送信元IPアドレス #{arp.arp_spa}"
-        puts "送信先MACアドレス #{arp.arp_tha}"
-        puts "送信先IPアドレス #{arp.arp_tpa}"
+        puts "src MAC Address #{arp.arp_sha}"
+        puts "src IP Address #{arp.arp_spa}"
+        puts "dst MAC Address #{arp.arp_tha}"
+        puts "dst IP Address #{arp.arp_tpa}"
     end
 
     puts

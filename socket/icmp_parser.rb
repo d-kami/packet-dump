@@ -1,8 +1,8 @@
-require 'icmp'
-require 'icmp_echo'
-require 'icmp_unreach'
-require 'icmp_redirect'
-require 'icmp_time_exceeded'
+require './icmp'
+require './icmp_echo'
+require './icmp_unreach'
+require './icmp_redirect'
+require './icmp_time_exceeded'
 
 class ICMPParser
     def ICMPParser::parse(packet)

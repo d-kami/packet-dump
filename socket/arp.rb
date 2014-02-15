@@ -8,11 +8,11 @@ class ARP
         attr_reader :ar_op
 
         def initialize(packet)
-            @ar_hrd = (packet[0] << 8) + packet[1]
-            @ar_pro = (packet[2] << 8) + packet[3]
-            @ar_hlen = packet[4]
-            @ar_plen = packet[5]
-            @ar_op = (packet[6] << 8) + packet[7]
+            @ar_hrd = packet[0, 2].unpack('n')[0]
+            @ar_pro = packet[2, 2].unpack('n')[0]
+            @ar_hlen = packet[4].unpack('C')[0]
+            @ar_plen = packet[5].unpack('C')[0]
+            @ar_op = packet[6, 2].unpack('n')[0]
         end
     end
 
@@ -46,11 +46,15 @@ class ARP
     end
 
     def mac_to_s(packet, index)
+        address = packet[index, 6].unpack('C6');
+
         return sprintf('%02X:%02X:%02X:%02X:%02X:%02X',
-            packet[index], packet[index + 1], packet[index + 2], packet[index + 3], packet[index + 4], packet[index + 5])
+            address[0], address[1], address[2], address[3], address[4], address[5])
     end
 
     def ip_to_s(packet, index)
-        return sprintf("%d.%d.%d.%d", packet[index], packet[index + 1], packet[index + 2], packet[index + 3])
+        address = packet[index, 4].unpack('C4')
+
+        return sprintf("%d.%d.%d.%d", address[0], address[1], address[2], address[3])
     end
 end

@@ -6,12 +6,14 @@ class EtherHeader
     def initialize(frame)
         @ether_dhost = mac_to_s(frame, 0)
         @ether_shost = mac_to_s(frame, 6)
-        @ether_type = (frame[12] << 8) + frame[13]
+        @ether_type = frame[12, 2].unpack('n')[0]
     end
 
     def mac_to_s(frame, index)
+        header = frame[index, 6].unpack('C*');
+
         return sprintf('%02X:%02X:%02X:%02X:%02X:%02X',
-            frame[index], frame[index + 1], frame[index + 2], frame[index + 3], frame[index + 4], frame[index + 5])
+            header[0], header[1], header[2], header[3], header[4], header[5])
     end
 end
 
