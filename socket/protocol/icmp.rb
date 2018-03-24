@@ -12,8 +12,10 @@ class ICMP
     ICMP_PARAMPROB    = 12
 
     def initialize(packet)
-        @icmp_type = packet[0].unpack('C')[0]
-        @icmp_code = packet[1].unpack('C')[0]
-        @icmp_cksum = packet[2].unpack('n')[0]
+        header = packet.unpack('C2n')
+
+        @icmp_type = header[0]
+        @icmp_code = header[1]
+        @icmp_cksum = header[2]
     end
 end

@@ -4,7 +4,10 @@ class ICMPUnreach < ICMP
 
     def initialize(packet)
         super(packet)
-        @icmp_pmvoid = (packet[4] << 8) + packet[5]
-        @icmp_nextmtu = (packet[6] << 8) + packet[7]
+
+        contents = packet.unpack('C4n2')
+
+        @icmp_pmvoid = contents[4]
+        @icmp_nextmtu = contents[5]
     end
 end

@@ -8,11 +8,13 @@ class ARP
         attr_reader :ar_op
 
         def initialize(packet)
-            @ar_hrd = packet[0, 2].unpack('n')[0]
-            @ar_pro = packet[2, 2].unpack('n')[0]
-            @ar_hlen = packet[4].unpack('C')[0]
-            @ar_plen = packet[5].unpack('C')[0]
-            @ar_op = packet[6, 2].unpack('n')[0]
+            header = packet.unpack('n2C2n')
+
+            @ar_hrd = header[0]
+            @ar_pro = header[1]
+            @ar_hlen = header[2]
+            @ar_plen = header[3]
+            @ar_op = header[4]
         end
     end
 

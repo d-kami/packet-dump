@@ -1,10 +1,15 @@
+require './protocol/icmp'
+
 class ICMPEcho < ICMP
     attr_reader :icmp_id
     attr_reader :icmp_seq
 
     def initialize(packet)
         super(packet)
-        @icmp_id = (packet[4] << 8) + packet[5]
-        @icmp_seq = (packet[6] << 8) + packet[7]
+
+        contents = packet.unpack('C4n2')
+
+        @icmp_id = contents[4]
+        @icmp_seq = contents[5]
     end
 end

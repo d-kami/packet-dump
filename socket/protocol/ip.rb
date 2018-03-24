@@ -12,15 +12,17 @@ class IPHeader
     attr_reader :ip_dst
 
     def initialize(packet)
-        @version = (packet[0].unpack('C')[0] >> 4) & 0x0F
-        @ip_hl = packet[0].unpack('C')[0] & 0x0F
-        @ip_tos = packet[1].unpack('C')[0]
-        @ip_len = packet[2, 2].unpack('n')[0]
-        @ip_id = packet[4, 2].unpack('n')[0]
-        @ip_off = packet[6].unpack('n')[0]
-        @ip_ttl = packet[8].unpack('C')[0]
-        @ip_p = packet[9].unpack('C')[0]
-        @ip_sum = packet[10].unpack('n')[0]
+        header = packet.unpack('C2n3C2n')
+
+        @version = (header[0] >> 4) & 0x0F
+        @ip_hl = header[0] & 0x0F
+        @ip_tos = header[1]
+        @ip_len = header[2]
+        @ip_id = header[3]
+        @ip_off = header[4]
+        @ip_ttl = header[5]
+        @ip_p = header[6]
+        @ip_sum = header[7]
         @ip_src = ip_to_s(packet, 12)
         @ip_dst = ip_to_s(packet, 16)
     end

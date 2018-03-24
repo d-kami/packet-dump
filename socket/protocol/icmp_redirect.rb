@@ -3,7 +3,7 @@ class ICMPRedirect < ICMP
 
     def initialize(packet) 
         super(packet)
-        @icmp_gwaddr = ip_to_s(packet, 4)
+        @icmp_gwaddr = ip_to_s(packet.unpack('C8'), 4)
     end
 
     def ip_to_s(packet, index)

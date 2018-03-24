@@ -3,6 +3,7 @@ class ICMPTimeExceeded < ICMP
 
     def initialize(packet)
         super(packet)
-        @icmp_void = (packet[4] << 24) + (packet[5] << 16) + (packet[6] << 8) + packet[7]
+
+        @icmp_void = packet.unpack('C4N')[4]
     end
 end

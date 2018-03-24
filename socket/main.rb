@@ -1,11 +1,11 @@
 require 'socket'
 
-require './ether'
-require './ip'
-require './arp'
-require './tcp'
-require './udp'
-require './icmp_parser'
+require './protocol/ether'
+require './protocol/ip'
+require './protocol/arp'
+require './protocol/tcp'
+require './protocol/udp'
+require './protocol/icmp_parser'
 
 socket = Socket.open(Socket::AF_INET, Socket::SOCK_PACKET, Ethernet::ETH_P_ALL)
 
@@ -57,19 +57,20 @@ loop do
             icmp = ICMPParser.parse(buff)
             puts "icmp_type = #{icmp.icmp_type}"
 
-            if(icmp.icmp_type == ICMP::ICMP_ECHOREPLY)
+            case icmp.icmp_type
+            when ICMP::ICMP_ECHOREPLY then
                 puts 'Echo Reply'
-            elsif(icmp.icmp_type == ICMP::ICMP_UNREACH)
+            when ICMP::ICMP_UNREACH then
                 puts 'Unreach'
-            elsif(icmp.icmp_type == ICMP::ICMP_SOURCEQUENCH)
+            when ICMP::ICMP_SOURCEQUENCH then
                 puts 'SourceEquench'
-            elsif(icmp.icmp_type == ICMP::ICMP_REDIRECT)
+            when ICMP::ICMP_REDIRECT then
                 puts 'Redirect'
-            elsif(icmp.icmp_type == ICMP::ICMP_ECHO)
+            when ICMP::ICMP_ECHO then
                 puts 'Echo'
-            elsif(icmp.icmp_type == ICMP::ICMP_TIMXCEED)
+            when ICMP::ICMP_TIMXCEED then
                 puts 'TimeExceed'
-            elsif(icmp.icmp_type == ICMP::ICMP_PARAMPROB)
+            when ICMP::ICMP_PARAMPROB then
                 puts 'Error'
             end
         end
