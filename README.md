@@ -1,0 +1,4 @@
+RubyでRaw Socketを使ってパケットダンプしてみたプログラムです。
+Linuxのroot権限で実行するとパケットが見れるかもしれません。
+
+socketディレクトリに行ってruby main.rbで動くはずです
